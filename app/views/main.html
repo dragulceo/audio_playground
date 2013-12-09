@@ -1,0 +1,127 @@
+<div class="jumbotron">
+    <h1>Audio Experiments</h1>
+	<p><a href="https://github.com/dragulceo/audio_playground" title="Github project" >View on github</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Source</h2>
+        <form role="form">
+            <fieldset>
+                <legend>Load Test File</legend>
+                <div class="form-group">
+                    <button id="loadFile" class="btn btn-primary" ng-click="onLoadTestData()">Load Test File</button>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Record</legend>
+                <div class="form-group">
+                    <button id="startRecord" class="btn btn-primary" ng-click="onStartRecordButtonClick()" ng-disabled="recording">
+                         <span class="glyphicon glyphicon-record"></span> Record</button>
+                    <button id="stopRecord" class="btn btn-danger" ng-click="onStopRecordButtonClick()" ng-disabled="!recording">
+                         <span class="glyphicon glyphicon-stop"></span> Stop</button>
+                    <canvas-visualiser id="mic-visualisers" analyser-instance="micAnalyser"></canvas-visualiser>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Load Local File</legend>
+                <div class="form-group">
+                    <label for="loadFilename">File</label>
+                    <input id="loadFilename" type="file" value="" class="" ng-model="localFiles" accept="audio/*" />
+                </div>
+                <button id="loadFile" class="btn btn-primary" ng-click="onLoadFile()">Load File</button>
+            </fieldset>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <h2>Effects</h2>
+        <form role="form">
+            <fieldset>
+                <legend>Pitch shift (not live)</legend>
+                <div class="form-group">
+                    <label>
+                        <input id="pitchShiftValue" type="range" min="0" max="5" step="0.1" ng-model="pitchShiftValue" />Level {{pitchShiftValue}}</label>
+                </div>
+                <button id="pitchShift" class="btn btn-primary" ng-click="onPitchShiftButtonClick()">Shift Pitch</button>
+                <button id="revertLastPitchShift" class="btn btn-primary" ng-click="onUndoPitchButtonClick()" ng-disabled="!hasOriginalBuffer">Undo Shift Pitch</button>
+                <div class="form-group">
+                    <progress id="pitchShiftProgress" value="{{pitchShiftProgress}}" ng-show="pitchShifting"></progress>
+                </div>
+                <p class="help-block" ng-show="pitchShifted">The audio is pitch shifted you can play it now!</p>
+            </fieldset>
+           <h2>Live Effects</h2>
+            <fieldset>
+                <legend>Reverb</legend>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="5" step="0.1" ng-change="onReverbChange()" ng-model="reverbSeconds" />Seconds ({{reverbSeconds}})</label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="100" step="0.1" ng-change="onReverbChange()" ng-model="reverbDecay" />Decay ({{reverbDecay}})</label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="1" step="1" ng-change="onReverbChange()" ng-model="reverbReverse" />Reverse ({{reverbReverse}})</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Delay</legend>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="3" step="0.1" ng-change="onDelayChange()" ng-model="delay" />Delay ({{delay}})</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Wave</legend>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="1" step="0.1" ng-change="onWaveChange()" ng-model="wave" />Wave ({{wave}})</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Gain</legend>
+                <div class="form-group">
+                    <h4></h4>
+                    <label>
+                        <input type="range" min="0" max="1" step="0.1" ng-change="onGainChange()" ng-model="gain" />Gain ({{gain}})</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Filter</legend>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="1" step="1" ng-change="onFilterChange()" ng-model="filterType" />Type ({{filterType ? 'High' : 'Low'}})</label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="1" step="0.01" ng-change="onFilterChange()" ng-model="filterFreq" />Freq ({{filterFreq}})</label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="range" min="0" max="30" step="1" ng-change="onFilterChange()" ng-model="filterQ" />Q ({{filterQ}})</label>
+
+                </div>
+            </fieldset>
+            <!--<input type="checkbox" ng-model="pitchActive" ng-click="onPitchClick()" />Pitch</label>-->
+        </form>
+    </div>
+    <div class="col-md-4">
+        <h2>Playback</h2>
+        <fieldset>
+            <legend>Playback controls</legend>
+            <div class="form-group">
+                <button id="startPlay" class="btn btn-primary" ng-disabled="playing || !hasPlayable" ng-click="onStartButtonClick()">
+                    <span class="glyphicon glyphicon-play"></span> Play</button>
+                <button id="stopPlay" class="btn btn-danger" ng-disabled="!playing" ng-click="onStopButtonClick()">
+                    <span class="glyphicon glyphicon-stop"></span> Stop</button>
+                <button id="Download" class="btn btn-danger" ng-disabled="!hasPlayable" ng-click="onDownloadButtonClick()">
+                    <span class="glyphicon glyphicon-save"></span> Download</button>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="loop" ng-model="loop" ng-change="onLoopChange()" />Loop</label>
+            </div>
+        </fieldset>
+        <canvas-visualiser id="mic-visualiser" analyser-instance="playAnalyser"></canvas-visualiser>
+    </div>
+</div>
