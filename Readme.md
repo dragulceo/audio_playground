@@ -28,6 +28,4 @@ Todo
 
  * Improve visualizer 
  * Add better instructions
- * Download processed/Share
- * pitch shift both channels
 
